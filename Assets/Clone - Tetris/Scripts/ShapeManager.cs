@@ -10,10 +10,15 @@ namespace Tetris
 	public class ShapeManager : MonoBehaviour
 	{
 		private readonly Vector3Int _rotateAmount = new Vector3Int(0, 0, 90);
-		
+
+		[SerializeField] private Shape[] _shapes;
+
 		private Shape _currentShape;
 		private Shape _nextShape;
 		private GridXY<bool> _grid;
+
+		public Shape CurrentShape => _currentShape;
+		public Shape NextShape => _nextShape;
 
 		private void Awake()
 		{
@@ -98,6 +103,9 @@ namespace Tetris
 				block.transform.parent = null;
 				_grid.SetElement(block.Column, block.Row, true);
 			}
+			
+			_currentShape = _nextShape;
+			_nextShape = _shapes.RandomElement();
 
 			Destroy(shape);
 		}
