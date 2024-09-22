@@ -11,5 +11,12 @@ namespace Tetris
 		[SerializeField] private Color _color;
 
 		private bool _canMove = true;
+
+		public Block[] Blocks => GetBlocks();
+
+		private Block[] GetBlocks()
+		{
+			return null;
+		}
 	}
 }
