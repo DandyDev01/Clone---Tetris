@@ -20,12 +20,21 @@ namespace Tetris
 			_grid = GameObject.FindObjectOfType<SampleGridXY>().GetComponent<GridXY<bool>>();
 		}
 
+		/// <summary>
+		/// Rotate a shape.
+		/// </summary>
+		/// <param name="shape">The shape to be rotated.</param>
 		public void RotateShape(Shape shape)
 		{
 			Transform transformToRotate = shape.GetComponent<Transform>();
 			transformToRotate.Rotate(_rotateAmount);
 		}
 
+		/// <summary>
+		/// Moves the blocks that make up a shape in the specified direction.
+		/// </summary>
+		/// <param name="blocks">Blocks that make up the shape to move.</param>
+		/// <param name="direction">Direction to move the shape.</param>
 		public void MoveShape(Block[] blocks, Vector2 direction)
 		{
 			if (CanMove(blocks, direction) == false)
@@ -39,6 +48,12 @@ namespace Tetris
 			}
 		}
 
+		/// <summary>
+		/// Checks if all blocks can move in the specified direction.
+		/// </summary>
+		/// <param name="blocks">Blocks to to check for valid movement</param>
+		/// <param name="direction">Direction the blocks are trying to move.</param>
+		/// <returns>Weather or not all blocks can move in the specified direction.</returns>
 		private bool CanMove(Block[] blocks, Vector2 direction)
 		{
 			if (direction == Vector2.down)
@@ -70,6 +85,10 @@ namespace Tetris
 			return true;
 		}
 
+		/// <summary>
+		/// Places the shape into the playspace.
+		/// </summary>
+		/// <param name="shape">Shape to place in the playspave</param>
 		public void PlaceShape(Shape shape)
 		{
 			Block[] blocks = shape.Blocks;
