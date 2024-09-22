@@ -7,16 +7,23 @@ namespace Tetris
 	public class Shape : MonoBehaviour
 	{
 		[SerializeField] private Block _blockPrefab;
-		[SerializeField] private Vector2Int[] _parts;
+		[SerializeField] private Vector2[] _parts;
 		[SerializeField] private Color _color;
 
-		private bool _canMove = true;
+		private Block[] _blocks;
 
-		public Block[] Blocks => GetBlocks();
+		public Block[] Blocks => _blocks;
 
-		private Block[] GetBlocks()
+		private void Awake()
 		{
-			return null;
+			_blocks = new Block[_parts.Length];
+
+			for (int i = 0; i < _parts.Length; i++)
+			{
+				Block newPart = Instantiate(_blockPrefab, _parts[i], Quaternion.identity);
+				newPart.transform.parent = transform;
+				_blocks[i] = newPart;
+			}
 		}
 	}
 }
