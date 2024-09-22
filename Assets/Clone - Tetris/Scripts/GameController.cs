@@ -13,6 +13,7 @@ namespace Tetris
 		private const float _tickRate = 1f;
 		private const float _placeShapeTime = 0.4f;
 
+
 		private Timer _tickTimer;
 		private Timer _nextShapeTimer;
 		private ShapeManager _shapeManager;
@@ -21,7 +22,6 @@ namespace Tetris
 		private void Awake()
 		{
 			_shapeManager = GameObject.FindAnyObjectByType<ShapeManager>();
-			_grid = GameObject.FindObjectOfType<SampleGridXY>().GetComponent<GridXY<bool>>();
 
 			_nextShapeTimer = new Timer(_placeShapeTime, false);
 
@@ -29,6 +29,11 @@ namespace Tetris
 
 			_tickTimer = new Timer(_tickRate, true);
 			_tickTimer.OnTimerEnd += HandleTick;
+		}
+
+		private void Start()
+		{
+			_grid = GameObject.FindGameObjectWithTag("Grid").GetComponent<SampleGridXY>().Grid;
 		}
 
 		private void Update()
@@ -48,8 +53,13 @@ namespace Tetris
 			bool canMove = true;
 			foreach (Block block in blocks)
 			{
-				if (_grid.GetElement(block.Column, block.Row - 1))
+				if (_grid.IsInRange(block.Column, block.Row - 1) == false ||
+					_grid.GetElement(block.Column, block.Row - 1))
+				{
 					canMove = false;
+					break;
+				}
+
 			}
 
 			_tickTimer.Reset(_tickRate, true);

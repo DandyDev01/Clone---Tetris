@@ -20,9 +20,12 @@ namespace Tetris
 		public Shape CurrentShape => _currentShape;
 		public Shape NextShape => _nextShape;
 
-		private void Awake()
+		private void Start()
 		{
-			_grid = GameObject.FindObjectOfType<SampleGridXY>().GetComponent<GridXY<bool>>();
+			_grid = GameObject.FindGameObjectWithTag("Grid").GetComponent<SampleGridXY>().Grid;
+			
+			Vector3Int cell = _grid.GetCellPosition(new Vector3(0, 10, 0));
+			_currentShape = Instantiate(_shapes.RandomElement(), cell, Quaternion.identity);
 		}
 
 		/// <summary>
@@ -83,6 +86,9 @@ namespace Tetris
 
 			foreach (Block block in blocks)
 			{
+				if (_grid.IsInRange(block.Column + (int)direction.x, block.Row + (int)direction.y) == false)
+					return false;
+
 				if (_grid.GetElement(block.Column + (int)direction.x, block.Row + (int)direction.y))
 					return false;
 			}
