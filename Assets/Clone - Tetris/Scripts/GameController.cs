@@ -44,23 +44,7 @@ namespace Tetris
 
 		private void HandleTick()
 		{
-			_shapeManager.MoveShape(_shapeManager.CurrentShape.Blocks, Vector2.down);
-
-			Block[] blocks = _shapeManager.CurrentShape.Blocks;
-			float y = blocks.OrderBy(x => x.transform.position.y).Reverse().First().transform.position.y;
-			blocks = blocks.Where(b => b.transform.position.y == y).ToArray();
-
-			bool canMove = true;
-			foreach (Block block in blocks)
-			{
-				if (_grid.IsInRange(block.Column, block.Row - 1) == false ||
-					_grid.GetElement(block.Column, block.Row - 1))
-				{
-					canMove = false;
-					break;
-				}
-
-			}
+			bool canMove = _shapeManager.MoveShape(_shapeManager.CurrentShape.Blocks, Vector2.down);
 
 			_tickTimer.Reset(_tickRate, true);
 

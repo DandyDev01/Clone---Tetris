@@ -24,9 +24,10 @@ namespace Tetris
 		{
 			_grid = GameObject.FindGameObjectWithTag("Grid").GetComponent<SampleGridXY>().Grid;
 			
-			Vector3Int cell = _grid.GetCellPosition(new Vector3(0, 10, 0));
-			_currentShape = Instantiate(_shapes.RandomElement(), cell, Quaternion.identity);
-			_currentShape.Init(_grid, 6, 10);
+			Vector3 worldPosition = _grid.GetWorldPosition(6, 15);
+			
+			_currentShape = Instantiate(_shapes.RandomElement(), worldPosition, Quaternion.identity);
+			_currentShape.Init(_grid, 6, 15);
 		}
 
 		/// <summary>
@@ -44,17 +45,20 @@ namespace Tetris
 		/// </summary>
 		/// <param name="blocks">Blocks that make up the shape to move.</param>
 		/// <param name="direction">Direction to move the shape.</param>
-		public void MoveShape(Block[] blocks, Vector2 direction)
+		/// <returns>Wheather or not the shape moved</returns>
+		public bool MoveShape(Block[] blocks, Vector2 direction)
 		{
 			if (CanMove(blocks, direction) == false)
-				return;
+				return false;
 
 			foreach (Block block in blocks)
 			{
-				block.transform.position += (Vector3)direction;
-				block.Column = (int)transform.position.x;
-				block.Row = (int)transform.position.y;
+				block.transform.position += (Vector3)direction * _grid.CellSize;
+				block.Column += (int)direction.x;
+				block.Row += (int)direction.y;
 			}
+
+			return true;
 		}
 
 		/// <summary>
