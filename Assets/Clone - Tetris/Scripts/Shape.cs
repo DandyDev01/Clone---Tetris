@@ -23,7 +23,11 @@ namespace Tetris
 			{
 				Vector2Int cell = new Vector2Int((int)_parts[i].x + cellX, (int)_parts[i].y + cellY);
 				Block newPart = Instantiate(_blockPrefab, grid.GetWorldPosition(cell.x, cell.y), Quaternion.identity);
+				
 				newPart.transform.parent = transform;
+				newPart.Column = cell.x;
+				newPart.Row = cell.y;
+
 				_blocks[i] = newPart;
 			}
 		}
