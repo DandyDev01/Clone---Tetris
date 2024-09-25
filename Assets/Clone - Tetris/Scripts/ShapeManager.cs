@@ -26,6 +26,7 @@ namespace Tetris
 			
 			Vector3Int cell = _grid.GetCellPosition(new Vector3(0, 10, 0));
 			_currentShape = Instantiate(_shapes.RandomElement(), cell, Quaternion.identity);
+			_currentShape.Init(_grid, 6, 10);
 		}
 
 		/// <summary>
