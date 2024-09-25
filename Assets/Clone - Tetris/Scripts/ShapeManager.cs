@@ -28,6 +28,8 @@ namespace Tetris
 			
 			_currentShape = Instantiate(_shapes.RandomElement(), worldPosition, Quaternion.identity);
 			_currentShape.Init(_grid, 6, 15);
+
+			_nextShape = _shapes.RandomElement();
 		}
 
 		/// <summary>
@@ -71,17 +73,17 @@ namespace Tetris
 		{
 			if (direction == Vector2.down)
 			{
-				float y = blocks.OrderBy(x => x.transform.position.y).Reverse().First().transform.position.y;
+				float y = blocks.OrderBy(x => x.transform.position.y).First().transform.position.y;
 				blocks = blocks.Where(b => b.transform.position.y == y).ToArray();
 			}
 			else if (direction == Vector2.left)
 			{
-				float x = blocks.OrderBy(x => x.transform.position.x).First().transform.position.x;
+				float x = blocks.OrderBy(x => x.transform.position.x).Reverse().First().transform.position.x;
 				blocks = blocks.Where(b => b.transform.position.x == x).ToArray();
 			}
 			else if (direction == Vector2.right)
 			{
-				float x = blocks.OrderBy(b => b.transform.position.x).Reverse().First().transform.position.x;
+				float x = blocks.OrderBy(b => b.transform.position.x).First().transform.position.x;
 				blocks = blocks.Where(b => b.transform.position.x == x).ToArray();
 			}
 			else
@@ -114,8 +116,12 @@ namespace Tetris
 				block.transform.parent = null;
 				_grid.SetElement(block.Column, block.Row, true);
 			}
-			
-			_currentShape = _nextShape;
+
+			Vector3 worldPosition = _grid.GetWorldPosition(6, 15);
+
+			_currentShape = Instantiate(_nextShape, worldPosition, Quaternion.identity);
+			_currentShape.Init(_grid, 6, 15);
+
 			_nextShape = _shapes.RandomElement();
 
 			Destroy(shape);

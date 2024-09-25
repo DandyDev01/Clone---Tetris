@@ -10,7 +10,7 @@ namespace Tetris
 {
 	public class GameController : MonoBehaviour
 	{
-		private const float _tickRate = 1f;
+		private const float _tickRate = 0.3f;
 		private const float _placeShapeTime = 0.4f;
 
 

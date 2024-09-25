@@ -11,14 +11,10 @@ namespace Tetris
 		[SerializeField] private Vector2[] _parts;
 		[SerializeField] private Color _color;
 
-		private Block[] _blocks;
-
-		public Block[] Blocks => _blocks;
+		public Block[] Blocks => transform.GetComponentsInChildren<Block>();
 
 		public void Init(Grid<bool> grid, int cellX, int cellY)
 		{
-			_blocks = new Block[_parts.Length];
-
 			for (int i = 0; i < _parts.Length; i++)
 			{
 				Vector2Int cell = new Vector2Int((int)_parts[i].x + cellX, (int)_parts[i].y + cellY);
@@ -27,8 +23,6 @@ namespace Tetris
 				newPart.transform.parent = transform;
 				newPart.Column = cell.x;
 				newPart.Row = cell.y;
-
-				_blocks[i] = newPart;
 			}
 		}
 	}

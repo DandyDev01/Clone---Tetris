@@ -52,8 +52,8 @@ namespace Grid
 		/// <returns>true is the target position is inside the grid</returns>
 		public bool IsInRange(Vector3 targetPosition)
 		{
-			targetPosition = GetCellPosition(targetPosition);
-			return targetPosition.x >= 0 && targetPosition.x < columns && targetPosition.y >= 0 && targetPosition.y < rows;
+			Vector3Int cell = GetCellPosition(targetPosition);
+			return IsInRange(cell.x, cell.y);
 		}
 
 		/// <summary>
@@ -244,7 +244,8 @@ namespace Grid
 		/// <returns></returns>
 		public bool SetElement(int col, int row, TGridObject e)
 		{
-			if (!IsInRange(GetWorldPosition(col, row))) return false;
+			if (IsInRange(col, row) == false) 
+				return false;
 
 			Cells[col, row] = e;
 			return true;
