@@ -247,6 +247,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _shapes:
   - {fileID: 1439961214435151285, guid: 9cfd6a2562468bb4f99ddd6f2c46d70f, type: 3}
+  - {fileID: 7072765723818063557, guid: a0999e8cc54d14f4b9097f88d3b94dbc, type: 3}
 --- !u!114 &1264167662
 MonoBehaviour:
   m_ObjectHideFlags: 0

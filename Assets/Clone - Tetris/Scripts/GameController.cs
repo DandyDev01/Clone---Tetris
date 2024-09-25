@@ -1,10 +1,5 @@
 using Grid;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using static Unity.Collections.AllocatorManager;
 
 namespace Tetris
 {
@@ -13,7 +8,7 @@ namespace Tetris
 		private const float _tickRate = 0.3f;
 		private const float _placeShapeTime = 0.4f;
 
-
+		private PlayerInput _playerInput;
 		private Timer _tickTimer;
 		private Timer _nextShapeTimer;
 		private ShapeManager _shapeManager;
@@ -29,6 +24,9 @@ namespace Tetris
 
 			_tickTimer = new Timer(_tickRate, true);
 			_tickTimer.OnTimerEnd += HandleTick;
+
+			_playerInput = new PlayerInput();
+			_playerInput.Enable();
 		}
 
 		private void Start()
@@ -40,6 +38,14 @@ namespace Tetris
 		{
 			_tickTimer.Tick(Time.deltaTime);
 			_nextShapeTimer.Tick(Time.deltaTime);
+
+			Vector2 direction = _playerInput.KeyboardMouse.Move.ReadValue<Vector2>();
+
+			if (direction != Vector2.up && direction != Vector2.zero)
+				_shapeManager.MoveShape(_shapeManager.CurrentShape.Blocks, direction);
+
+			if (_playerInput.KeyboardMouse.Rotate.ReadValue<float>() != 0)
+				_shapeManager.RotateShape(_shapeManager.CurrentShape);
 		}
 
 		private void HandleTick()
