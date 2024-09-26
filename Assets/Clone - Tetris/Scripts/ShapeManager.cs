@@ -1,8 +1,4 @@
 using Grid;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Tetris
@@ -11,6 +7,7 @@ namespace Tetris
 	{
 		private readonly Vector3Int _rotateAmount = new Vector3Int(0, 0, 90);
 
+		[SerializeField] private Vector2Int _spawnCell = new Vector2Int(6, 23);
 		[SerializeField] private Shape[] _shapes;
 
 		private Shape _currentShape;
@@ -24,10 +21,10 @@ namespace Tetris
 		{
 			_grid = GameObject.FindGameObjectWithTag("Grid").GetComponent<SampleGridXY>().Grid;
 			
-			Vector3 worldPosition = _grid.GetWorldPosition(6, 23);
+			Vector3 worldPosition = _grid.GetWorldPosition(_spawnCell.x, _spawnCell.y);
 			
 			_currentShape = Instantiate(_shapes.RandomElement(), worldPosition, Quaternion.identity);
-			_currentShape.Init(_grid, 6, 23);
+			_currentShape.Init(_grid, _spawnCell.x, _spawnCell.y);
 
 			_nextShape = _shapes.RandomElement();
 		}
@@ -106,10 +103,10 @@ namespace Tetris
 				_grid.SetElement(block.Column, block.Row, true);
 			}
 
-			Vector3 worldPosition = _grid.GetWorldPosition(6, 23);
+			Vector3 worldPosition = _grid.GetWorldPosition(_spawnCell.x, _spawnCell.y);
 
 			_currentShape = Instantiate(_nextShape, worldPosition, Quaternion.identity);
-			_currentShape.Init(_grid, 6, 23);
+			_currentShape.Init(_grid, _spawnCell.x, _spawnCell.y);
 
 			_nextShape = _shapes.RandomElement();
 

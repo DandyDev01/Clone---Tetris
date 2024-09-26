@@ -66,6 +66,8 @@ namespace Tetris
 			_nextShapeTimer.Stop();
 			_nextShapeTimer.Reset(_placeShapeTime, false);
 			_shapeManager.PlaceShape(_shapeManager.CurrentShape);
+
+			// TODO: check for complete row
 		}
 	}
 }

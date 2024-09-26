@@ -245,9 +245,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8a5ce7a5e0c82c4f9a27a7d80cf0a85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _spawnCell: {x: 6, y: 23}
   _shapes:
   - {fileID: 1439961214435151285, guid: 9cfd6a2562468bb4f99ddd6f2c46d70f, type: 3}
   - {fileID: 7072765723818063557, guid: a0999e8cc54d14f4b9097f88d3b94dbc, type: 3}
+  - {fileID: 1439961214435151285, guid: b66f60e3c2293ae4595529a882b6a744, type: 3}
+  - {fileID: 937963033727724398, guid: 81e62e3f0c8a377408dc5f49ffc0358f, type: 3}
+  - {fileID: 1439961214435151285, guid: 6d587613fadf9be46a49ccc496e56d44, type: 3}
 --- !u!114 &1264167662
 MonoBehaviour:
   m_ObjectHideFlags: 0
