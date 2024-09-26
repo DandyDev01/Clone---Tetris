@@ -38,8 +38,18 @@ namespace Tetris
 		/// <param name="shape">The shape to be rotated.</param>
 		public void RotateShape(Shape shape)
 		{
-			Transform transformToRotate = shape.GetComponent<Transform>();
-			transformToRotate.Rotate(_rotateAmount);
+			shape.transform.Rotate(_rotateAmount);
+
+			// TODO: update the column and row of each block the shape is made of
+
+			Block[] blocks = shape.Blocks;
+
+			foreach (Block block in blocks) 
+			{
+				Vector3Int cell = _grid.GetCellPosition(block.transform.position);
+				block.Column = cell.x;
+				block.Row = cell.y;
+			}
 		}
 
 		/// <summary>
@@ -55,10 +65,11 @@ namespace Tetris
 
 			foreach (Block block in blocks)
 			{
-				block.transform.position += (Vector3)direction * _grid.CellSize;
 				block.Column += (int)direction.x;
 				block.Row += (int)direction.y;
 			}
+
+			blocks[0].transform.parent.position += (Vector3)direction * _grid.CellSize;
 
 			return true;
 		}
@@ -71,26 +82,6 @@ namespace Tetris
 		/// <returns>Weather or not all blocks can move in the specified direction.</returns>
 		private bool CanMove(Block[] blocks, Vector2 direction)
 		{
-			if (direction == Vector2.down)
-			{
-				float y = blocks.OrderBy(x => x.transform.position.y).First().transform.position.y;
-				blocks = blocks.Where(b => b.transform.position.y == y).ToArray();
-			}
-			else if (direction == Vector2.left)
-			{
-				float x = blocks.OrderBy(x => x.transform.position.x).Reverse().First().transform.position.x;
-				blocks = blocks.Where(b => b.transform.position.x == x).ToArray();
-			}
-			else if (direction == Vector2.right)
-			{
-				float x = blocks.OrderBy(b => b.transform.position.x).First().transform.position.x;
-				blocks = blocks.Where(b => b.transform.position.x == x).ToArray();
-			}
-			else
-			{
-				return false;
-			}
-
 			foreach (Block block in blocks)
 			{
 				if (_grid.IsInRange(block.Column + (int)direction.x, block.Row + (int)direction.y) == false)

@@ -12,6 +12,7 @@ namespace Tetris
 		[SerializeField] private Color _color;
 
 		public Block[] Blocks => transform.GetComponentsInChildren<Block>();
+		public Vector2[] Parts => _parts;
 
 		public void Init(Grid<bool> grid, int cellX, int cellY)
 		{

@@ -7,7 +7,10 @@ namespace Grid
 		[SerializeField] private Vector3 oragin = Vector3.zero;
 		[SerializeField] private int columns = 1;
 		[SerializeField] private int rows = 1;
-		[SerializeField] private float cellSize = 1;
+
+		[SerializeField]
+		[Min(1f)]
+		private float cellSize = 1;
 
 		private GridXY<bool> grid;
 

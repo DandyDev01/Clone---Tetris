@@ -40,11 +40,12 @@ namespace Tetris
 			_nextShapeTimer.Tick(Time.deltaTime);
 
 			Vector2 direction = _playerInput.KeyboardMouse.Move.ReadValue<Vector2>();
+			bool wasPressedThisFrame = _playerInput.KeyboardMouse.Move.WasPressedThisFrame();
 
-			if (direction != Vector2.up && direction != Vector2.zero)
+			if (direction != Vector2.up && direction != Vector2.zero && wasPressedThisFrame)
 				_shapeManager.MoveShape(_shapeManager.CurrentShape.Blocks, direction);
 
-			if (_playerInput.KeyboardMouse.Rotate.ReadValue<float>() != 0)
+			if (_playerInput.KeyboardMouse.Rotate.WasPressedThisFrame())
 				_shapeManager.RotateShape(_shapeManager.CurrentShape);
 		}
 
