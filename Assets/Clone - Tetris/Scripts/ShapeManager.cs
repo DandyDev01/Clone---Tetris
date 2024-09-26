@@ -24,10 +24,10 @@ namespace Tetris
 		{
 			_grid = GameObject.FindGameObjectWithTag("Grid").GetComponent<SampleGridXY>().Grid;
 			
-			Vector3 worldPosition = _grid.GetWorldPosition(6, 15);
+			Vector3 worldPosition = _grid.GetWorldPosition(6, 23);
 			
 			_currentShape = Instantiate(_shapes.RandomElement(), worldPosition, Quaternion.identity);
-			_currentShape.Init(_grid, 6, 15);
+			_currentShape.Init(_grid, 6, 23);
 
 			_nextShape = _shapes.RandomElement();
 		}
@@ -39,8 +39,6 @@ namespace Tetris
 		public void RotateShape(Shape shape)
 		{
 			shape.transform.Rotate(_rotateAmount);
-
-			// TODO: update the column and row of each block the shape is made of
 
 			Block[] blocks = shape.Blocks;
 
@@ -108,10 +106,10 @@ namespace Tetris
 				_grid.SetElement(block.Column, block.Row, true);
 			}
 
-			Vector3 worldPosition = _grid.GetWorldPosition(6, 15);
+			Vector3 worldPosition = _grid.GetWorldPosition(6, 23);
 
 			_currentShape = Instantiate(_nextShape, worldPosition, Quaternion.identity);
-			_currentShape.Init(_grid, 6, 15);
+			_currentShape.Init(_grid, 6, 23);
 
 			_nextShape = _shapes.RandomElement();
 
