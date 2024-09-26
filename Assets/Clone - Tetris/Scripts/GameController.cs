@@ -55,19 +55,38 @@ namespace Tetris
 
 			_tickTimer.Reset(_tickRate, true);
 
-			if (canMove)
-				return;
-
-			_nextShapeTimer.Play();
+			if (canMove == false)
+				_nextShapeTimer.Play();
 		}
 
 		private void PlaceShape()
 		{
 			_nextShapeTimer.Stop();
 			_nextShapeTimer.Reset(_placeShapeTime, false);
-			_shapeManager.PlaceShape(_shapeManager.CurrentShape);
+			_shapeManager.PlaceShape(_shapeManager.CurrentShape.Blocks);
 
-			// TODO: check for complete row
+			int row = _grid.GetCellPosition(_shapeManager.CurrentShape.transform.position).y;
+			if (RowCompleted(row))
+			{
+				// TODO: remove all blocks on that row and move all blocks above down a row
+				for (int column = 0; column < _grid.Columns; column++)
+				{
+
+				}
+			}
+		}
+
+		private bool RowCompleted(int row)
+		{
+			for (int column = 0; column < _grid.Columns; column++)
+			{
+				if (_grid.GetElement(column, row) == false)
+				{
+					return false;
+				}
+			}
+
+			return true;
 		}
 	}
 }

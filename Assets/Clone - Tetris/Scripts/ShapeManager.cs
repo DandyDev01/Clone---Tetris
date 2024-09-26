@@ -1,4 +1,5 @@
 using Grid;
+using System.Linq;
 using UnityEngine;
 
 namespace Tetris
@@ -93,9 +94,9 @@ namespace Tetris
 		/// Places the shape into the playspace.
 		/// </summary>
 		/// <param name="shape">Shape to place in the playspave</param>
-		public void PlaceShape(Shape shape)
+		public void PlaceShape(Block[] blocks)
 		{
-			Block[] blocks = shape.Blocks;
+			Shape shape = blocks.First().transform.parent.GetComponent<Shape>();
 
 			foreach (Block block in blocks) 
 			{
