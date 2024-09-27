@@ -11,6 +11,7 @@ namespace Tetris
 		private const float _tickRate = 0.3f;
 		private const float _placeShapeTime = 0.4f;
 
+		private NextShapePreview _nextShapePreview;
 		private PlayerInput _playerInput;
 		private Timer _tickTimer;
 		private Timer _nextShapeTimer;
@@ -19,7 +20,8 @@ namespace Tetris
 
 		private void Awake()
 		{
-			_shapeManager = GameObject.FindAnyObjectByType<ShapeManager>();
+			_shapeManager = GameObject.FindObjectOfType<ShapeManager>();
+			_nextShapePreview = GameObject.FindObjectOfType<NextShapePreview>();
 
 			_nextShapeTimer = new Timer(_placeShapeTime, false);
 
@@ -30,6 +32,8 @@ namespace Tetris
 
 			_playerInput = new PlayerInput();
 			_playerInput.Enable();
+
+			_shapeManager.OnPlaceShape += _nextShapePreview.UpdatePreview;
 		}
 
 		private void Start()
@@ -57,6 +61,9 @@ namespace Tetris
 			bool canMove = _shapeManager.MoveShape(_shapeManager.CurrentShape.Blocks, Vector2.down);
 
 			_tickTimer.Reset(_tickRate, true);
+			
+			//if (canMove && _nextShapeTimer.IsPlaying)
+			//	_nextShapeTimer.Reset(_placeShapeTime, false);
 
 			if (canMove == false)
 				_nextShapeTimer.Play();
@@ -70,17 +77,20 @@ namespace Tetris
 			_nextShapeTimer.Stop();
 			_nextShapeTimer.Reset(_placeShapeTime, false);
 			_shapeManager.PlaceShape(_shapeManager.CurrentShape.Blocks);
+
+			Shape shape = _shapeManager.CurrentShape;
+
 			_shapeManager.SetCurrentShapeToNextShape();
 
-			StartCoroutine(DestroyAndMoveBlocks());
+			StartCoroutine(DestroyAndMoveBlocks(shape));
 		}
 
 		/// <summary>
 		/// Destroys all blocks on the a filled row and moves all rows down one.
 		/// </summary>
-		private IEnumerator DestroyAndMoveBlocks()
+		private IEnumerator DestroyAndMoveBlocks(Shape shape)
 		{
-			Block[] blocks = _shapeManager.CurrentShape.Blocks
+			Block[] blocks =  shape.Blocks
 				.GroupBy(b => b.Row)
 				.Select(g => g.First())
 				.OrderBy(x => x.Row)

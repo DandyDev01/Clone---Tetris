@@ -1,4 +1,5 @@
 using Grid;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -18,6 +19,8 @@ namespace Tetris
 		public Shape CurrentShape => _currentShape;
 		public Shape NextShape => _nextShape;
 
+		public Action<Shape> OnPlaceShape;
+
 		private void Start()
 		{
 			_grid = GameObject.FindGameObjectWithTag("Grid").GetComponent<SampleGridXY>().Grid;
@@ -28,6 +31,7 @@ namespace Tetris
 			_currentShape.Init(_grid, _spawnCell.x, _spawnCell.y);
 
 			_nextShape = _shapes.RandomElement();
+			OnPlaceShape?.Invoke(_nextShape);
 		}
 
 		/// <summary>
@@ -154,6 +158,8 @@ namespace Tetris
 			_currentShape.Init(_grid, _spawnCell.x, _spawnCell.y);
 
 			_nextShape = _shapes.RandomElement();
+
+			OnPlaceShape?.Invoke(_nextShape);
 		}
 	}
 }
