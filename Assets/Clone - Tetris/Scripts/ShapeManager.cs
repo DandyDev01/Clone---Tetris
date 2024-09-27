@@ -101,14 +101,18 @@ namespace Tetris
 		/// <param name="shape">Shape to place in the playspave</param>
 		public void PlaceShape(Block[] blocks)
 		{
+			if (blocks.Length == 0) 
+				return;
+
+			GameObject parent = blocks.First().transform.parent.gameObject;
+			
 			foreach (Block block in blocks)
 			{
 				block.transform.parent = null;
 				_grid.SetElement(block.Column, block.Row, true);
 			}
 
-			GameObject currentShapeObject = _currentShape.gameObject;
-			Destroy(currentShapeObject);
+			Destroy(parent);
 		}
 
 		public void SetCurrentShapeToNextShape()

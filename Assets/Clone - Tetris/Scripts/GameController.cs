@@ -63,13 +63,18 @@ namespace Tetris
 
 		private void PlaceShape()
 		{
-			Block[] blocks = _shapeManager.CurrentShape.Blocks;
+			Block[] blocks = _shapeManager.CurrentShape.Blocks
+				.GroupBy(b => b.Row)
+				.Select(g => g.First())
+				.OrderBy(x => x.Row)
+				.Reverse()
+				.ToArray();
 
 			_nextShapeTimer.Stop();
 			_nextShapeTimer.Reset(_placeShapeTime, false);
 			_shapeManager.PlaceShape(_shapeManager.CurrentShape.Blocks);
 
-			foreach (Block part in blocks.OrderBy(x => x.Row))
+			foreach (Block part in blocks)
 			{
 				if (RowCompleted(part.Row))
 				{
