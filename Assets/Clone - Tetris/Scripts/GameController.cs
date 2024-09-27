@@ -4,6 +4,7 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 namespace Tetris
 {
@@ -11,8 +12,11 @@ namespace Tetris
 	{
 		private const float _tickRate = 0.3f;
 		private const float _placeShapeTime = 0.4f;
+		private const int _gameOverRow = 23;
 
 		[SerializeField] private TextMeshProUGUI _pointsTextBox;
+		[SerializeField] private GameObject _gameOverPanel;
+		[SerializeField] private GameObject _mainMenuPanel;
 
 		private NextShapePreview _nextShapePreview;
 		private PlayerInput _playerInput;
@@ -31,7 +35,7 @@ namespace Tetris
 
 			_nextShapeTimer.OnTimerEnd += PlaceShape;
 
-			_tickTimer = new Timer(_tickRate, true);
+			_tickTimer = new Timer(_tickRate, false);
 			_tickTimer.OnTimerEnd += HandleTick;
 
 			_playerInput = new PlayerInput();
@@ -40,6 +44,9 @@ namespace Tetris
 			_shapeManager.OnPlaceShape += _nextShapePreview.UpdatePreview;
 
 			_pointsTextBox.text = "Score: " + _points.ToString();
+
+			_gameOverPanel.SetActive(false);
+			_mainMenuPanel.SetActive(true);
 		}
 
 		private void Start()
@@ -88,6 +95,18 @@ namespace Tetris
 			_shapeManager.SetCurrentShapeToNextShape();
 
 			StartCoroutine(DestroyAndMoveBlocks(blocks));
+
+			for (int i = 0; i < _grid.Columns; i++) 
+			{
+				if (_grid.GetElement(i, _gameOverRow))
+					EndGame();
+			}
+		}
+
+		private void EndGame()
+		{
+			_tickTimer.Stop();
+			_gameOverPanel.SetActive(true);
 		}
 
 		/// <summary>
@@ -184,6 +203,22 @@ namespace Tetris
 			}
 
 			return true;
+		}
+
+		public void Play()
+		{
+			_tickTimer.Play();
+			_mainMenuPanel.SetActive(false);
+		}
+
+		public void Reload()
+		{
+			SceneManager.LoadScene(0);
+		}
+
+		public void Quit()
+		{
+			Application.Quit();
 		}
 	}
 }
