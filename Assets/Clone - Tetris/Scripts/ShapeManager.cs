@@ -44,6 +44,13 @@ namespace Tetris
 			{
 				Vector3Int check = _grid.GetCellPosition(block.transform.position);
 
+				// rotation results in block collision.
+				if (_grid.IsInRange(check.x, check.y) && _grid.GetElement(check.x, check.y))
+				{
+					shape.transform.Rotate(-_rotateAmount);
+					return;
+				}
+
 				// rotating the shape can move a block out of the grid, 
 				// this moves the block back into the grid.
 				if (_grid.IsInRange(block.transform.position) == false)
@@ -54,7 +61,7 @@ namespace Tetris
 					}
 					else if (block.transform.position.x >= _grid.GetWorldPosition(_grid.Columns / 2, 0).x) 
 					{
-						shape.transform.position += Vector3.left * Mathf.Abs((block.transform.position.x - _grid.GetWorldPosition(_grid.Columns-1, 0).x));
+						shape.transform.position += Vector3.left * Mathf.Abs((block.transform.position.x - _grid.GetWorldPosition(_grid.Columns - 1, 0).x));
 					}
 					else if (block.transform.position.y < _grid.GetWorldPosition(0, _grid.Rows / 2).y)
 					{
@@ -62,7 +69,7 @@ namespace Tetris
 					}
 					else if (block.transform.position.y >= _grid.GetWorldPosition(0, _grid.Rows / 2).y)
 					{
-						shape.transform.position += Vector3.down * Mathf.Abs(block.transform.position.y - _grid.GetWorldPosition(0, 0).y);
+						shape.transform.position += Vector3.down * Mathf.Abs(block.transform.position.y - _grid.GetWorldPosition(0, _grid.Rows - 1).y);
 					}
 				}
 
