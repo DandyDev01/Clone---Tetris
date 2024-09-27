@@ -23,7 +23,7 @@ namespace Tetris
 
 			_nextShapeTimer = new Timer(_placeShapeTime, false);
 
-			_nextShapeTimer.OnTimerEnd += P;
+			_nextShapeTimer.OnTimerEnd += PlaceShape;
 
 			_tickTimer = new Timer(_tickRate, true);
 			_tickTimer.OnTimerEnd += HandleTick;
@@ -62,12 +62,23 @@ namespace Tetris
 				_nextShapeTimer.Play();
 		}
 
-		private void P()
+		/// <summary>
+		/// Places a shape into the game world.
+		/// </summary>
+		private void PlaceShape()
 		{
-			StartCoroutine(PlaceShape());
+			_nextShapeTimer.Stop();
+			_nextShapeTimer.Reset(_placeShapeTime, false);
+			_shapeManager.PlaceShape(_shapeManager.CurrentShape.Blocks);
+			_shapeManager.SetCurrentShapeToNextShape();
+
+			StartCoroutine(DestroyAndMoveBlocks());
 		}
 
-		private IEnumerator PlaceShape()
+		/// <summary>
+		/// Destroys all blocks on the a filled row and moves all rows down one.
+		/// </summary>
+		private IEnumerator DestroyAndMoveBlocks()
 		{
 			Block[] blocks = _shapeManager.CurrentShape.Blocks
 				.GroupBy(b => b.Row)
@@ -75,11 +86,6 @@ namespace Tetris
 				.OrderBy(x => x.Row)
 				.Reverse()
 				.ToArray();
-
-			_nextShapeTimer.Stop();
-			_nextShapeTimer.Reset(_placeShapeTime, false);
-			_shapeManager.PlaceShape(_shapeManager.CurrentShape.Blocks);
-			_shapeManager.SetCurrentShapeToNextShape();
 
 			foreach (Block part in blocks)
 			{
@@ -139,10 +145,13 @@ namespace Tetris
 					}
 				}
 			}
-
-
 		}
 
+		/// <summary>
+		/// Check if all columns on the specified row are filled.
+		/// </summary>
+		/// <param name="row">Row to check the columns of.</param>
+		/// <returns>Weather or not all columns on the specified row are filled.</returns>
 		private bool RowCompleted(int row)
 		{
 			for (int column = 0; column < _grid.Columns; column++)
