@@ -74,23 +74,22 @@ namespace Tetris
 		/// </summary>
 		private void PlaceShape()
 		{
+			Block[] blocks = _shapeManager.CurrentShape.Blocks;
+			
 			_nextShapeTimer.Stop();
 			_nextShapeTimer.Reset(_placeShapeTime, false);
 			_shapeManager.PlaceShape(_shapeManager.CurrentShape.Blocks);
-
-			Shape shape = _shapeManager.CurrentShape;
-
 			_shapeManager.SetCurrentShapeToNextShape();
 
-			StartCoroutine(DestroyAndMoveBlocks(shape));
+			StartCoroutine(DestroyAndMoveBlocks(blocks));
 		}
 
 		/// <summary>
 		/// Destroys all blocks on the a filled row and moves all rows down one.
 		/// </summary>
-		private IEnumerator DestroyAndMoveBlocks(Shape shape)
+		private IEnumerator DestroyAndMoveBlocks(Block[] blocks)
 		{
-			Block[] blocks =  shape.Blocks
+			blocks = blocks
 				.GroupBy(b => b.Row)
 				.Select(g => g.First())
 				.OrderBy(x => x.Row)
