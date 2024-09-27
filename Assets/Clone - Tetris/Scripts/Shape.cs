@@ -22,6 +22,8 @@ namespace Tetris
 				newPart.transform.parent = transform;
 				newPart.Column = cell.x;
 				newPart.Row = cell.y;
+
+				newPart.GetComponent<SpriteRenderer>().color = _color;
 			}
 		}
 	}

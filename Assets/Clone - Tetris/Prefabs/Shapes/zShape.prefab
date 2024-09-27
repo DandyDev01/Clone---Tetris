@@ -9,12 +9,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1151928862352956011, guid: 59372efaab28c8e44b6cdbaf46ae1be7, type: 3}
+      propertyPath: _color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1151928862352956011, guid: 59372efaab28c8e44b6cdbaf46ae1be7, type: 3}
       propertyPath: _color.b
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1151928862352956011, guid: 59372efaab28c8e44b6cdbaf46ae1be7, type: 3}
       propertyPath: _color.g
-      value: 0
+      value: 0.5851397
       objectReference: {fileID: 0}
     - target: {fileID: 1151928862352956011, guid: 59372efaab28c8e44b6cdbaf46ae1be7, type: 3}
       propertyPath: _color.r
@@ -42,7 +46,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8263896188653744001, guid: 59372efaab28c8e44b6cdbaf46ae1be7, type: 3}
       propertyPath: m_Name
-      value: zShape Variant
+      value: zShape
       objectReference: {fileID: 0}
     - target: {fileID: 8887797701598898485, guid: 59372efaab28c8e44b6cdbaf46ae1be7, type: 3}
       propertyPath: m_LocalPosition.x

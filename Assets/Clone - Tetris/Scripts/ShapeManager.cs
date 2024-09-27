@@ -53,10 +53,12 @@ namespace Tetris
 		/// </summary>
 		/// <param name="blocks">Blocks that make up the shape to move.</param>
 		/// <param name="direction">Direction to move the shape.</param>
+		/// <exception cref="System.Exception">Throws when the blocks passed do not have a parent. 
+		/// It is expected that all blocks share the same parent</exception>
 		/// <returns>Wheather or not the shape moved</returns>
 		public bool MoveShape(Block[] blocks, Vector2 direction)
 		{
-			if (CanMove(blocks, direction) == false)
+			if (CanMove(blocks, direction) == false || blocks.Length == 0)
 				return false;
 
 			foreach (Block block in blocks)
@@ -64,6 +66,9 @@ namespace Tetris
 				block.Column += (int)direction.x;
 				block.Row += (int)direction.y;
 			}
+
+			if (blocks[0].transform.parent is null)
+				throw new System.Exception("Blocks are missing a parent.");
 
 			blocks[0].transform.parent.position += (Vector3)direction * _grid.CellSize;
 
@@ -96,22 +101,24 @@ namespace Tetris
 		/// <param name="shape">Shape to place in the playspave</param>
 		public void PlaceShape(Block[] blocks)
 		{
-			Shape shape = blocks.First().transform.parent.GetComponent<Shape>();
-
-			foreach (Block block in blocks) 
+			foreach (Block block in blocks)
 			{
 				block.transform.parent = null;
 				_grid.SetElement(block.Column, block.Row, true);
 			}
 
+			GameObject currentShapeObject = _currentShape.gameObject;
+			Destroy(currentShapeObject);
+		}
+
+		public void SetCurrentShapeToNextShape()
+		{
 			Vector3 worldPosition = _grid.GetWorldPosition(_spawnCell.x, _spawnCell.y);
 
 			_currentShape = Instantiate(_nextShape, worldPosition, Quaternion.identity);
 			_currentShape.Init(_grid, _spawnCell.x, _spawnCell.y);
 
 			_nextShape = _shapes.RandomElement();
-
-			Destroy(shape);
 		}
 	}
 }

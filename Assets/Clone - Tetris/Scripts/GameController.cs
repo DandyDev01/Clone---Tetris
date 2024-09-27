@@ -1,4 +1,6 @@
 using Grid;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Tetris
@@ -61,19 +63,72 @@ namespace Tetris
 
 		private void PlaceShape()
 		{
+			Block[] blocks = _shapeManager.CurrentShape.Blocks;
+
 			_nextShapeTimer.Stop();
 			_nextShapeTimer.Reset(_placeShapeTime, false);
 			_shapeManager.PlaceShape(_shapeManager.CurrentShape.Blocks);
 
-			int row = _grid.GetCellPosition(_shapeManager.CurrentShape.transform.position).y;
-			if (RowCompleted(row))
+			foreach (Block part in blocks.OrderBy(x => x.Row))
 			{
-				// TODO: remove all blocks on that row and move all blocks above down a row
-				for (int column = 0; column < _grid.Columns; column++)
+				if (RowCompleted(part.Row))
 				{
+					// Remove all blocks on that row.
+					for (int column = 0; column < _grid.Columns; column++)
+					{
+						Vector3 worldPosition = _grid.GetWorldPosition(column, part.Row);
+						Collider2D blockCollider = Physics2D.OverlapCircle(worldPosition, 0.3f);
 
+						if (blockCollider is null)
+							continue;
+
+						Block block = blockCollider.transform.GetComponent<Block>();
+
+						if (block is null)
+							throw new System.Exception("The cell (" + column + ", " + part.Row + ") has a collider without a Block.");
+
+						Destroy(block.gameObject);
+						_grid.SetElement(column, part.Row, false);
+					
+						// TODO: give points
+					}
+
+					// Move all blocks above down a row.
+					for (int column = 0; column < _grid.Columns; column++)
+					{
+						List<Block> blocksInColumn = new();
+						GameObject parent = new GameObject("blocksToMoveParent");
+						parent.transform.position = _grid.GetWorldPosition(column, 10);
+
+						for (int row = 0; row < _grid.Rows; row++)
+						{
+							if (_grid.GetElement(column, row) == false)
+								continue;
+
+							Vector3 worldPosition = _grid.GetWorldPosition(column, row);
+							Collider2D blockCollider = Physics2D.OverlapCircle(worldPosition, 0.3f);
+
+							if (blockCollider is null)
+								throw new System.Exception("Cell (" + column + ", " + row + ") value is true, but there is no collider.");
+
+							Block block = blockCollider.transform.GetComponent<Block>();
+
+							if (block is null)
+								throw new System.Exception("The cell (" + column + ", " + row + ") has a collider without a Block.");
+
+							blocksInColumn.Add(block);
+							block.transform.parent = parent.transform;
+							_grid.SetElement(column, row, false);
+						}
+
+						_shapeManager.MoveShape(blocksInColumn.ToArray(), Vector2.down);
+						_shapeManager.PlaceShape(blocksInColumn.ToArray());
+					}
 				}
 			}
+
+
+			_shapeManager.SetCurrentShapeToNextShape();
 		}
 
 		private bool RowCompleted(int row)
