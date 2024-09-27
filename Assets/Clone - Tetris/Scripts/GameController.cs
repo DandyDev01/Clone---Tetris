@@ -1,4 +1,5 @@
 using Grid;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -22,7 +23,7 @@ namespace Tetris
 
 			_nextShapeTimer = new Timer(_placeShapeTime, false);
 
-			_nextShapeTimer.OnTimerEnd += PlaceShape;
+			_nextShapeTimer.OnTimerEnd += P;
 
 			_tickTimer = new Timer(_tickRate, true);
 			_tickTimer.OnTimerEnd += HandleTick;
@@ -61,7 +62,12 @@ namespace Tetris
 				_nextShapeTimer.Play();
 		}
 
-		private void PlaceShape()
+		private void P()
+		{
+			StartCoroutine(PlaceShape());
+		}
+
+		private IEnumerator PlaceShape()
 		{
 			Block[] blocks = _shapeManager.CurrentShape.Blocks
 				.GroupBy(b => b.Row)
@@ -73,6 +79,7 @@ namespace Tetris
 			_nextShapeTimer.Stop();
 			_nextShapeTimer.Reset(_placeShapeTime, false);
 			_shapeManager.PlaceShape(_shapeManager.CurrentShape.Blocks);
+			_shapeManager.SetCurrentShapeToNextShape();
 
 			foreach (Block part in blocks)
 			{
@@ -101,11 +108,10 @@ namespace Tetris
 					// Move all blocks above down a row.
 					for (int column = 0; column < _grid.Columns; column++)
 					{
-						List<Block> blocksInColumn = new();
 						GameObject parent = new GameObject("blocksToMoveParent");
 						parent.transform.position = _grid.GetWorldPosition(column, 10);
 
-						for (int row = 0; row < _grid.Rows; row++)
+						for (int row = part.Row + 1; row < _grid.Rows; row++)
 						{
 							if (_grid.GetElement(column, row) == false)
 								continue;
@@ -121,19 +127,20 @@ namespace Tetris
 							if (block is null)
 								throw new System.Exception("The cell (" + column + ", " + row + ") has a collider without a Block.");
 
-							blocksInColumn.Add(block);
 							block.transform.parent = parent.transform;
 							_grid.SetElement(column, row, false);
 						}
 
-						_shapeManager.MoveShape(blocksInColumn.ToArray(), Vector2.down);
-						_shapeManager.PlaceShape(blocksInColumn.ToArray());
+						Block[] blocksToMove = parent.GetComponentsInChildren<Block>();
+
+						_shapeManager.MoveShape(blocksToMove, Vector2.down);
+						_shapeManager.PlaceShape(blocksToMove);
+						yield return new WaitForEndOfFrame();
 					}
 				}
 			}
 
 
-			_shapeManager.SetCurrentShapeToNextShape();
 		}
 
 		private bool RowCompleted(int row)
