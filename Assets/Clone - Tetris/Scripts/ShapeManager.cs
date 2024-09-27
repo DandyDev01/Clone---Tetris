@@ -42,6 +42,30 @@ namespace Tetris
 
 			foreach (Block block in blocks) 
 			{
+				Vector3Int check = _grid.GetCellPosition(block.transform.position);
+
+				// rotating the shape can move a block out of the grid, 
+				// this moves the block back into the grid.
+				if (_grid.IsInRange(block.transform.position) == false)
+				{
+					if (block.transform.position.x < _grid.GetWorldPosition(_grid.Columns / 2, 0).x)
+					{
+						shape.transform.position += Vector3.right * Mathf.Abs((block.transform.position.x - _grid.GetWorldPosition(0, 0).x));
+					}
+					else if (block.transform.position.x >= _grid.GetWorldPosition(_grid.Columns / 2, 0).x) 
+					{
+						shape.transform.position += Vector3.left * Mathf.Abs((block.transform.position.x - _grid.GetWorldPosition(_grid.Columns-1, 0).x));
+					}
+					else if (block.transform.position.y < _grid.GetWorldPosition(0, _grid.Rows / 2).y)
+					{
+						shape.transform.position += Vector3.up * Mathf.Abs(block.transform.position.y - _grid.GetWorldPosition(0, 0).y);
+					}
+					else if (block.transform.position.y >= _grid.GetWorldPosition(0, _grid.Rows / 2).y)
+					{
+						shape.transform.position += Vector3.down * Mathf.Abs(block.transform.position.y - _grid.GetWorldPosition(0, 0).y);
+					}
+				}
+
 				Vector3Int cell = _grid.GetCellPosition(block.transform.position);
 				block.Column = cell.x;
 				block.Row = cell.y;
