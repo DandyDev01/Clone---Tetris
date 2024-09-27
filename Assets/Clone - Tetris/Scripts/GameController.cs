@@ -1,8 +1,9 @@
 using Grid;
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using TMPro;
 
 namespace Tetris
 {
@@ -11,12 +12,15 @@ namespace Tetris
 		private const float _tickRate = 0.3f;
 		private const float _placeShapeTime = 0.4f;
 
+		[SerializeField] private TextMeshProUGUI _pointsTextBox;
+
 		private NextShapePreview _nextShapePreview;
 		private PlayerInput _playerInput;
 		private Timer _tickTimer;
 		private Timer _nextShapeTimer;
 		private ShapeManager _shapeManager;
 		private GridXY<bool> _grid;
+		private int _points = 0;
 
 		private void Awake()
 		{
@@ -34,6 +38,8 @@ namespace Tetris
 			_playerInput.Enable();
 
 			_shapeManager.OnPlaceShape += _nextShapePreview.UpdatePreview;
+
+			_pointsTextBox.text = "Score: " + _points.ToString();
 		}
 
 		private void Start()
@@ -89,6 +95,10 @@ namespace Tetris
 		/// </summary>
 		private IEnumerator DestroyAndMoveBlocks(Block[] blocks)
 		{
+			if (blocks.Length == 0)
+				throw new System.Exception("Blocks cannot be empty");
+
+			// get unique items ordered by desending row
 			blocks = blocks
 				.GroupBy(b => b.Row)
 				.Select(g => g.First())
@@ -116,8 +126,10 @@ namespace Tetris
 
 						Destroy(block.gameObject);
 						_grid.SetElement(column, part.Row, false);
-					
+
 						// TODO: give points
+						_points += 100;
+						_pointsTextBox.text = "Score: " + _points.ToString();
 					}
 
 					// Move all blocks above down a row.
